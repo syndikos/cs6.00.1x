@@ -19,9 +19,17 @@ def Coordinate(object):
         self.x = x
         self.y = y
 
-    def distance(origin, point):
-        h_distance = abs(origin.x - point.x)**2
-        v_distance = abs(origin.y - point.y)**2
-        return sqrt(h_distance + v_distance)
 
-    
+
+
+
+def distance(origin, point):
+    h_distance = abs(origin.x - point.x)**2
+    v_distance = abs(origin.y - point.y)**2
+    return sqrt(h_distance + v_distance)
+
+origin = Coordinate(0, 0)
+c = Coordinate(3, 4)
+
+def __str__(self):
+    return '<' + str(self.x) + ',' + str(self.y) + '>'
