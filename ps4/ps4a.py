@@ -20,7 +20,7 @@ WORDLIST_FILENAME = "words.txt"
 def loadWords():
     """
     Returns a list of valid words. Words are strings of lowercase letters.
-    
+
     Depending on the size of the word list, this function may
     take a while to finish.
     """
@@ -48,7 +48,7 @@ def getFrequencyDict(sequence):
     for x in sequence:
         freq[x] = freq.get(x,0) + 1
     return freq
-	
+
 
 # (end of helper code)
 # -----------------------------------
@@ -120,15 +120,15 @@ def dealHand(n):
     """
     hand={}
     numVowels = n // 3
-    
+
     for i in range(numVowels):
         x = VOWELS[random.randrange(0,len(VOWELS))]
         hand[x] = hand.get(x, 0) + 1
-        
-    for i in range(numVowels, n):    
+
+    for i in range(numVowels, n):
         x = CONSONANTS[random.randrange(0,len(CONSONANTS))]
         hand[x] = hand.get(x, 0) + 1
-        
+
     return hand
 
 #
@@ -139,7 +139,7 @@ def updateHand(hand, word):
     Assumes that 'hand' has all the letters in word.
     In other words, this assumes that however many times
     a letter appears in 'word', 'hand' has at least as
-    many of that letter in it. 
+    many of that letter in it.
 
     Updates the hand: uses up the letters in the given word
     and returns the new hand, without those letters in it.
@@ -147,7 +147,7 @@ def updateHand(hand, word):
     Has no side effects: does not modify hand.
 
     word: string
-    hand: dictionary (string -> int)    
+    hand: dictionary (string -> int)
     returns: dictionary (string -> int)
     """
 
@@ -155,13 +155,17 @@ def updateHand(hand, word):
     result = hand.copy()
     for char in word:
          if char in hand.keys():
-              result[char] -= 1
+             result[char] -= 1
+             if result[char] == 0:
+                 del(result[char])
+
+
     return result
 
-              
-              
-              
-	
+
+
+
+
 
 
 
@@ -174,18 +178,18 @@ def isValidWord(word, hand, wordList):
     composed of letters in the hand. Otherwise, returns False.
 
     Does not mutate hand or wordList.
-   
+
     word: string
     hand: dictionary (string -> int)
     wordList: list of lowercase strings
     """
 
-   
+
     freq = getFrequencyDict(word)
     for char in word:
          if freq[char] > hand.get(char, 0):
               return False
-                   
+
     if not word in wordList:
          return False
     else:
@@ -197,9 +201,9 @@ def isValidWord(word, hand, wordList):
 #
 
 def calculateHandlen(hand):
-    """ 
+    """
     Returns the length (number of letters) in the current hand.
-    
+
     hand: dictionary (string-> int)
     returns: integer
     """
@@ -214,7 +218,7 @@ def playHand(hand, wordList, n):
     Allows the user to play the given hand, as follows:
 
     * The hand is displayed.
-    * The user may input a word or a single period (the string ".") 
+    * The user may input a word or a single period (the string ".")
       to indicate they're done playing
     * Invalid words are rejected, and a message is displayed asking
       the user to choose another word until they enter a valid word or "."
@@ -229,24 +233,24 @@ def playHand(hand, wordList, n):
       hand: dictionary (string -> int)
       wordList: list of lowercase strings
       n: integer (HAND_SIZE; i.e., hand size required for additional points)
-      
+
     """
-            
+
 
     # Game is over (user entered a '.' or ran out of letters), so tell user the total score
-    letters_left = sum(hand.values())
+    #letters_left = sum(hand.values())
     total_score = 0
-    while letters_left > 0:
+    while (calculateHandlen(hand) > 0):
          print('Current Hand:',end='')
          displayHand(hand)
-         
+
          word = input('Enter word, or a "." to indicate that you are finished:')
 
          if word == '.':
               print('Goodbye! Total score:', total_score, 'points. ', end='')
-              
+
               break
-         else: 
+         else:
              if isValidWord(word, hand, wordList) == False:
                  word = ''
                  print('Invalid word, please try again.')
@@ -256,15 +260,15 @@ def playHand(hand, wordList, n):
                  print(word, 'earned', scores, 'points. Total:', total_score, 'points', end='')
                  print()
                  hand = updateHand(hand, word)
-                 
-                 letters_left = sum(hand.values())
 
-         if letters_left <= 0:
-              print('Run out of letters. Total score:', total_score, 'points.', end='')
- 
+                 #letters_left = sum(hand.values())
+
+         #if letters_left <= 0:
+    print('Run out of letters. Total score:', total_score, 'points.', end='')
+
 #
 # Problem #5: Playing a game
-# 
+#
 
 def playGame(wordList):
     """
@@ -275,8 +279,8 @@ def playGame(wordList):
       * If the user inputs 'r', let the user play the last hand again.
       * If the user inputs 'e', exit the game.
       * If the user inputs anything else, tell them their input was invalid.
- 
-    2) When done playing the hand, repeat from step 1    
+
+    2) When done playing the hand, repeat from step 1
     """
     # TO DO ... <-- Remove this comment when you code this function
     # <-- Remove this line when you code the function
@@ -284,28 +288,28 @@ def playGame(wordList):
     while True:
         user_input = input('Enter n to deal a new hand, r to replay the last hand, or e to end game: ')
         n = HAND_SIZE
-        
-        
+
+
         if user_input == 'n':
-            
+
             hand = dealHand(n)
             last_hand = hand
             counter = 1
             playHand(hand, wordList, n)
-            
-            
+
+
         elif user_input == 'r':
-             
+
              if counter == 0:
                   print('You have not played a hand yet. Please play a new hand first!')
              elif counter == 1:
-                  
+
                   playHand(last_hand, wordList, n)
         elif user_input == 'e':
              break
         else:
             print('Invalid command.')
-   
+
 
 
 
